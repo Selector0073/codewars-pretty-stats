@@ -18,16 +18,10 @@ Go to the project directory
   cd my-project
 ```
 
-Install dependencies
-
-```bash
-  cargo Install
-```
-
 Start the server
 
 ```bash
-  cargo run
+  go run .
 ```
 
 
