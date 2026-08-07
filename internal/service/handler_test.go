@@ -3,6 +3,7 @@ package service
 import (
 	"bufio"
 	"bytes"
+	"codewars-pretty-stats/internal/config"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -11,6 +12,11 @@ import (
 )
 
 func makeRequest(size string, username string) *http.Response {
+	cfg := &config.AxiomConfig{
+		AxiomURL:   "invalid",
+		AxiomToken: "invalid",
+	}
+
 	rec := httptest.NewRecorder()
 
 	params := url.Values{}
@@ -21,7 +27,7 @@ func makeRequest(size string, username string) *http.Response {
 
 	req := httptest.NewRequest(http.MethodGet, target, nil)
 
-	Svg(rec, req)
+	Svg(cfg)(rec, req)
 
 	res := rec.Result()
 	defer res.Body.Close()
@@ -56,23 +62,23 @@ func TestSVGValid(t *testing.T) {
 	res := makeRequest("1", "Selector0073")
 
 	if res.StatusCode != http.StatusOK {
-		t.Error("Valid request returned error")
+		t.Error("Valid request returned error. Code:" + res.Status)
 	}
 
 	if containsSVG(res) != true {
-		t.Error("SVG not found")
+		t.Error("SVG not found. Code:" + res.Status)
 	}
 }
 
 func TestSVGInvalidSize(t *testing.T) {
-	res := makeRequest("1.5", "Selector0073")
+	res := makeRequest("one", "Selector0073")
 
 	if res.StatusCode == http.StatusOK {
-		t.Error("Invalid size returned OK")
+		t.Error("Invalid size returned OK. Code:" + res.Status)
 	}
 
 	if containsSVG(res) == true {
-		t.Error("SVG not found")
+		t.Error("SVG not found. Code:" + res.Status)
 	}
 }
 
@@ -80,11 +86,11 @@ func TestSVGInvalidUser(t *testing.T) {
 	res := makeRequest("1", "_unexisted^user_")
 
 	if res.StatusCode == http.StatusOK {
-		t.Error("Invalid user returned OK")
+		t.Error("Invalid user returned OK. Code:" + res.Status)
 	}
 
 	if containsSVG(res) == true {
-		t.Error("SVG not found")
+		t.Error("SVG not found. Code:" + res.Status)
 	}
 }
 
@@ -92,10 +98,10 @@ func TestSVGInvalidBoth(t *testing.T) {
 	res := makeRequest("one", "_unexisted^user_")
 
 	if res.StatusCode == http.StatusOK {
-		t.Error("Invalid user returned OK")
+		t.Error("Invalid user returned OK. Code:" + res.Status)
 	}
 
 	if containsSVG(res) == true {
-		t.Error("SVG not found")
+		t.Error("SVG not found. Code:" + res.Status)
 	}
 }

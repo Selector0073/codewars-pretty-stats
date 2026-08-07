@@ -1,6 +1,7 @@
 package service
 
 import (
+	"codewars-pretty-stats/internal/config"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,9 +9,14 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	svg "github.com/ajstarks/svgo"
 )
+
+var codewarsClient = &http.Client{
+	Timeout: 10 * time.Second,
+}
 
 type User struct {
 	Id                  string               `json:"id"`
@@ -48,29 +54,52 @@ type LanguageEntry struct {
 
 // ---
 
-func Svg(w http.ResponseWriter, r *http.Request) {
-	size, err_s := strconv.Atoi(r.FormValue("size"))
-	if err_s != nil || size < 1 {
-		http.Error(w, "400 size error", http.StatusBadRequest)
-		return
+func Svg(cfg *config.AxiomConfig) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		size, err_s := strconv.ParseFloat(r.FormValue("size"), 64)
+		if err_s != nil || size < 0.5 || size > 5 {
+			http.Error(w, "Size not passed or less than 1 or more than 10", http.StatusBadRequest)
+			return
+		}
+
+		username := url.QueryEscape(r.FormValue("username"))
+		if username == "" {
+			http.Error(w, "Username not passed", http.StatusBadRequest)
+			return
+		}
+
+		go AxiomLog(username, size, cfg)
+
+		resp, err_r := codewarsClient.Get("https://www.codewars.com/api/v1/users/" + username)
+
+		if err_r != nil {
+			http.Error(w, "Network error", http.StatusServiceUnavailable)
+			return
+		}
+
+		defer resp.Body.Close()
+
+		switch resp.StatusCode {
+		case 200:
+			var user User
+
+			if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+				http.Error(w, "500 Error processing response from codewars", http.StatusInternalServerError)
+				return
+			}
+
+			generateSVG(size, user, w)
+		case 404:
+			http.Error(w, "Codewars user no found", http.StatusNotFound)
+			return
+		default:
+			http.Error(w, "Codewars internal server error", http.StatusServiceUnavailable)
+			return
+		}
 	}
+}
 
-	resp, err_r := http.Get("https://www.codewars.com/api/v1/users/" + url.QueryEscape(r.FormValue("username")))
-
-	if err_r != nil || resp.StatusCode != 200 {
-		http.Error(w, "404 Codewars user no found", http.StatusNotFound)
-		return
-	}
-
-	defer resp.Body.Close()
-
-	var user User
-
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		http.Error(w, "500 Error processing response from codewars", http.StatusInternalServerError)
-		return
-	}
-
+func generateSVG(size float64, user User, w http.ResponseWriter) {
 	const baseWidth = 540.0
 	const baseHeight = 310.0
 
@@ -78,7 +107,7 @@ func Svg(w http.ResponseWriter, r *http.Request) {
 	height := int(baseHeight * size)
 
 	s := func(val float64) int {
-		return int(val * float64(size))
+		return int(val * size)
 	}
 
 	var sortedLangs []LanguageEntry

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"codewars-pretty-stats/internal/config"
 	"codewars-pretty-stats/internal/router"
 	"log"
 	"net/http"
@@ -10,7 +11,9 @@ import (
 func main() {
 	log.Println("Initializing...")
 
-	var rout = router.New()
+	cfg := config.LoadAppConfig()
+
+	var rout = router.New(cfg)
 
 	server := &http.Server{
 		Addr:         ":4322",
