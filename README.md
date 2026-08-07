@@ -4,7 +4,7 @@
 
 A free API for retrieving great stats from your CodeWars account to spruce up your GitHub account, website, or anything else.
 
-![showcase](https://codewars-pretty-stats.selector0073.com/?size=2&username=Selector0073)
+[![codewars_stats](https://codewars-pretty-stats.selector0073.com/?size=2&username=Selector0073)](https://github.com/Selector0073/codewars-pretty-stats/)
 
 ## Run Locally
 
@@ -77,6 +77,7 @@ Contributions are always welcome! You can fork the repository and after finishin
 ## Roadmap
 
 - [ ] Add caching
+- [ ] Get the font locally, not from the internet
 
 
 ## License
