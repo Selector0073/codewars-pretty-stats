@@ -50,7 +50,7 @@ To use the projects, simply make a request with your [parameters](#paramaters) t
 for example:
 
 ```Markdown
-![showcase](https://codewars-pretty-stats.selector0073.com/?size=1&username=Selector0073)
+[![codewars_stats](https://codewars-pretty-stats.selector0073.com/?size=2&username=Selector0073)](https://github.com/Selector0073/codewars-pretty-stats/)
 ```
 or
 ```HTML
