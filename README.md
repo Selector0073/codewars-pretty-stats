@@ -4,7 +4,7 @@
 
 A free API for retrieving great stats from your CodeWars account to spruce up your GitHub account, website, or anything else.
 
-![showcase](https://codewars-pretty-stats.selector0073.com/?size=1&username=Selector0073)
+![showcase](https://codewars-pretty-stats.selector0073.com/?size=2&username=Selector0073)
 
 ## Run Locally
 
