@@ -2,6 +2,7 @@ package service
 
 import (
 	"codewars-pretty-stats/internal/config"
+	"codewars-pretty-stats/static"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -170,6 +171,19 @@ func generateSVG(size float64, user User, w http.ResponseWriter) {
 	canvas.Roundrect(0, 0, width, height, s(16), s(16), "class=\"bg\"")
 
 	paddingX := 28.0
+
+	// Codewars logo anchored to the upper right corner.
+	const logoBaseSize = 40.0
+	logoSize := s(logoBaseSize)
+	logoX := s(baseWidth - paddingX - logoBaseSize - 4)
+	logoY := s(42) - logoSize/2
+	logoMarkup := strings.Replace(
+		static.CodewarsLogo,
+		"<svg ",
+		fmt.Sprintf("<svg width=\"%d\" height=\"%d\" ", logoSize, logoSize),
+		1,
+	)
+	fmt.Fprintf(w, `<g transform="translate(%d,%d)">%s</g>`+"\n", logoX, logoY, logoMarkup)
 
 	rankName := strings.ToUpper(user.Ranks.OverallStruct.Name)
 	if rankName == "" {
