@@ -78,7 +78,7 @@ Contributions are always welcome! You can fork the repository and after finishin
 
 - [ ] Add caching
 - [ ] Get the font locally, not from the internet
-- [ ] Add codewars logo
+- [x] Add codewars logo
 
 
 ## License
