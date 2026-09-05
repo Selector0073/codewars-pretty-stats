@@ -102,7 +102,7 @@ func Svg(cfg *config.AxiomConfig) http.HandlerFunc {
 
 func generateSVG(size float64, user User, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "image/svg+xml")
-	w.Header().Set("Cache-Control", "max-age=0, no-cache, no-store, must-revalidate")
+	w.Header().Set("Cache-Control", "public, max-age=7200, stale-while-revalidate=86400")
 
 	const baseWidth = 540.0
 	const baseHeight = 310.0
