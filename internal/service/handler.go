@@ -69,7 +69,9 @@ func Svg(cfg *config.AxiomConfig) http.HandlerFunc {
 			return
 		}
 
-		go AxiomLog(username, size, cfg)
+		leaderboard := url.QueryEscape(r.FormValue("leaderboard"))
+
+		go AxiomLog(username, size, leaderboard, cfg)
 
 		resp, err_r := codewarsClient.Get("https://www.codewars.com/api/v1/users/" + username)
 
@@ -89,7 +91,7 @@ func Svg(cfg *config.AxiomConfig) http.HandlerFunc {
 				return
 			}
 
-			generateSVG(size, user, w)
+			generateSVG(size, user, leaderboard, w)
 		case 404:
 			http.Error(w, "Codewars user no found", http.StatusNotFound)
 			return
@@ -100,7 +102,7 @@ func Svg(cfg *config.AxiomConfig) http.HandlerFunc {
 	}
 }
 
-func generateSVG(size float64, user User, w http.ResponseWriter) {
+func generateSVG(size float64, user User, leaderboard string, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "public, max-age=7200, stale-while-revalidate=86400")
 
@@ -208,12 +210,22 @@ func generateSVG(size float64, user User, w http.ResponseWriter) {
 	lblY := 115.0
 	valY := 135.0
 
-	canvas.Text(s(col1), s(lblY), "LEADERBOARD", "class=\"stat-label\"")
-	leaderboardStr := "N/A"
-	if user.LeaderboardPosition > 0 {
-		leaderboardStr = fmt.Sprintf("#%d", user.LeaderboardPosition)
+	switch leaderboard {
+	case "rank":
+		canvas.Text(s(col1), s(lblY), "RANK", "class=\"stat-label\"")
+		leaderboardStr := "N/A"
+		if user.LeaderboardPosition > 0 {
+			leaderboardStr = fmt.Sprintf("%s", user.Ranks.OverallStruct.Name)
+		}
+		canvas.Text(s(col1), s(valY), leaderboardStr, "class=\"stat-value\"")
+	default:
+		canvas.Text(s(col1), s(lblY), "LEADERBOARD", "class=\"stat-label\"")
+		leaderboardStr := "N/A"
+		if user.LeaderboardPosition > 0 {
+			leaderboardStr = fmt.Sprintf("#%d", user.LeaderboardPosition)
+		}
+		canvas.Text(s(col1), s(valY), leaderboardStr, "class=\"stat-value\"")
 	}
-	canvas.Text(s(col1), s(valY), leaderboardStr, "class=\"stat-value\"")
 
 	canvas.Text(s(col2), s(lblY), "HONOR", "class=\"stat-label\"")
 	canvas.Text(s(col2), s(valY), fmt.Sprintf("%d", user.Honor), "class=\"stat-value\"")

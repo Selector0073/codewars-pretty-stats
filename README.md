@@ -68,6 +68,9 @@ https://codewars-pretty-stats.selector0073.com/?size=1&username=Selector0073
 
 `username` is your codewars username.
 
+### Optional
+`leaderboard` is a parameter used to replace the `LEADERBOARD` field with `RANK`. You can pass `rank` to display your rank, or nothing to display your position on the leaderboard.
+
 
 ## Contributing
 

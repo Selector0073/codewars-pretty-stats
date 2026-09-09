@@ -8,12 +8,13 @@ import (
 	"time"
 )
 
-func AxiomLog(username string, size float64, cfg *config.AxiomConfig) {
+func AxiomLog(username string, size float64, leaderboard string, cfg *config.AxiomConfig) {
 	payload := []map[string]interface{}{
 		{
-			"_time":    time.Now().Format(time.RFC3339),
-			"username": username,
-			"size":     size,
+			"_time":       time.Now().Format(time.RFC3339),
+			"username":    username,
+			"size":        size,
+			"leaderboard": leaderboard,
 		},
 	}
 
