@@ -1,4 +1,4 @@
-.PHONY help
+.PHONY: help build build-native run
 
 help:
 	@echo "build - to build project"
@@ -9,14 +9,8 @@ build:
 	go build cmd/codewars-api/main.go
 
 build-native:
-	cd internal/native/
-	cargo build --release
-	cd ../..
+	cargo build --manifest-path internal/native/Cargo.toml --release
 	mv internal/native/target/release/libnative.so internal/service/
 
-run: 
-	cd internal/native/
-	cargo build --release
-	cd ../..
-	mv internal/native/target/release/libnative.so internal/service/
+run: build-native
 	go run cmd/codewars-api/main.go
