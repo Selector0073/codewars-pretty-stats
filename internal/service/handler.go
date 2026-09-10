@@ -1,5 +1,10 @@
 package service
 
+/*
+#cgo LDFLAGS: -L${SRCDIR} -lnative -Wl,-rpath,${SRCDIR}
+int estimate_rank(int rank, int total);
+*/
+import "C"
 import (
 	"codewars-pretty-stats/internal/config"
 	"codewars-pretty-stats/static"
@@ -213,13 +218,14 @@ func generateSVG(size float64, user User, leaderboard string, w http.ResponseWri
 	switch leaderboard {
 	case "rank":
 		canvas.Text(s(col1), s(lblY), "RANK", "class=\"stat-label\"")
-		leaderboardStr := "N/A"
-		if user.LeaderboardPosition > 0 {
-			leaderboardStr = fmt.Sprintf("%s", user.Ranks.OverallStruct.Name)
-		}
+		leaderboardStr := fmt.Sprintf("%s", user.Ranks.OverallStruct.Name)
+		canvas.Text(s(col1), s(valY), leaderboardStr, "class=\"stat-value\"")
+	case "rankleaderboard":
+		canvas.Text(s(col1), s(lblY), "RANK LEADERBOARD", "class=\"stat-label\"")
+		leaderboardStr := fmt.Sprintf("#%d", C.estimate_rank(C.int(user.Ranks.OverallStruct.Score), C.int(400000)))
 		canvas.Text(s(col1), s(valY), leaderboardStr, "class=\"stat-value\"")
 	default:
-		canvas.Text(s(col1), s(lblY), "LEADERBOARD", "class=\"stat-label\"")
+		canvas.Text(s(col1), s(lblY), "HONOR LEADERBOARD", "class=\"stat-label\"")
 		leaderboardStr := "N/A"
 		if user.LeaderboardPosition > 0 {
 			leaderboardStr = fmt.Sprintf("#%d", user.LeaderboardPosition)
