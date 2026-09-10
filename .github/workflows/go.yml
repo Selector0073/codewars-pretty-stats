@@ -21,5 +21,13 @@ jobs:
       with:
         go-version: '1.26'
 
+    - name: Set up Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: stable
+
+    - name: Build
+      run: make build-native
+
     - name: Test
       run: go test -v ./...

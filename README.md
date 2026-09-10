@@ -25,7 +25,7 @@ Create a `.env` file and fill it with the structure `.env.example`
 Start the server
 
 ```bash
-  go run cmd/codewars-api/main.go
+  make run
 ```
 
 Make a request to url with the correct [parameters](#paramaters)
@@ -36,7 +36,7 @@ http://localhost:4322/?size=1&username=Selector0073
 
 ## Running Tests
 
-To run tests, run the following command
+To run tests, run the following command (with a compiled Rust library)
 
 ```bash
   go test ./...
@@ -69,7 +69,10 @@ https://codewars-pretty-stats.selector0073.com/?size=1&username=Selector0073
 `username` is your codewars username.
 
 ### Optional
-`leaderboard` is a parameter used to replace the `LEADERBOARD` field with `RANK`. You can pass `rank` to display your rank, or nothing to display your position on the leaderboard.
+`leaderboard` is a parameter used to replace the `LEADERBOARD` field with `RANK`. You can pass:
+- `rank` to display your rank.
+- `rankleaderboard` to display approximate position on the rank leaderboard (The value is not exact and is calculated using mathematical formulas, as it is impossible to obtain reliable data from Codewars).
+- nothing to display your position on the leaderboard.
 
 
 ## Contributing
