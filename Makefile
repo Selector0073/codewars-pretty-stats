@@ -10,7 +10,7 @@ build: build-native
 
 build-native:
 	@cargo build --manifest-path internal/native/Cargo.toml --release
-	@rm internal/service/libnative.so
+	@rm -f internal/service/libnative.so
 	@mv internal/native/target/release/libnative.so internal/service/
 
 run: build-native
