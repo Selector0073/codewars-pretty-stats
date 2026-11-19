@@ -6,12 +6,12 @@ help:
 	@echo "run - to run project"
 
 build: build-native
-	go build cmd/codewars-api/main.go
+	@go build cmd/codewars-api/main.go
 
 build-native:
-	cargo build --manifest-path internal/native/Cargo.toml --release
-	rm internal/service/libnative.so
-	mv internal/native/target/release/libnative.so internal/service/
+	@cargo build --manifest-path internal/native/Cargo.toml --release
+	@rm internal/service/libnative.so
+	@mv internal/native/target/release/libnative.so internal/service/
 
 run: build-native
-	go run cmd/codewars-api/main.go
+	@go run cmd/codewars-api/main.go
